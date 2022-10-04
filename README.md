@@ -1,4 +1,4 @@
-# my-vue-app
+# Task-Tracker
 
 ## Project setup
 ```
