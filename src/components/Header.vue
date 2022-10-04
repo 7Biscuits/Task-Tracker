@@ -1,7 +1,7 @@
 <template>
     <header>
         <h1>{{ title }}</h1>
-        <Button @click="onClick()" text="Add Task" color="green" />
+        <Button @click="$emit('toggle-showAddTask')" text="Add Task" color="green" />
     </header>
 </template>
 
@@ -16,12 +16,7 @@
         },
         components: {
             Button,
-        },
-        methods: {
-            onClick() {
-                console.log('onClick');
-            }
-        }        
+        },   
     }
 </script>
 
