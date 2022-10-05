@@ -31,7 +31,6 @@
         name: 'AddTask',
         data() {
           return {
-            id: null,
             title: '',
             description: '',
             day: '',
@@ -48,7 +47,6 @@
                 }
 
                 const NewTask = {
-                  id: this.id,
                   title: this.title,
                   description: this.description,
                   day: this.day,

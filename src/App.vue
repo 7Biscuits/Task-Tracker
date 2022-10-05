@@ -1,10 +1,9 @@
 <template>
   <div class="container">
-    <Header title="Task Tracker" @toggle-showAddTask="showAddTask = !showAddTask" />
+    <Header title="Task Tracker" @toggle-showAddTask="showAddTask = !showAddTask" :showAddTask="showAddTask" />
     <div v-if="showAddTask">
       <AddTask @new-task="addTask" />
     </div>
-    
     <Tasks @toggle-reminder="toggleReminder" @delete-task="deleteTask" :tasks="tasks" />
   </div>
 </template>
@@ -29,42 +28,38 @@ export default {
     }
   },
   methods: {
-    addTask(newTask) {
-      newTask.id = Object.keys(this.tasks).length + 1
-      this.tasks = [...this.tasks, newTask]
+    async addTask(newTask) {
+      const res = await fetch('api/tasks', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(newTask)
+      })
+      const data = await res.json() 
+
+      this.tasks = [...this.tasks, data]
     },
     deleteTask(id) {
       if (confirm('Are you sure you want to delete this task?')) this.tasks = this.tasks.filter(task => task.id !== id)
     },
     toggleReminder(id) {
-      let myTask = this.tasks = this.tasks.filter(task => task.id)
-      myTask[id-1].reminder = !myTask[id-1].reminder
+      this.tasks = this.tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task)
+    },
+    async fetchTasks() {
+    const res = await fetch('api/tasks')
+    const data = await res.json()
+    return data
+    },
+    async fetchTask(id) {
+    const res = await fetch(`api/tasks/${id}`)
+    const data = await res.json()
+    return data
     },
   },
-  created() {
-    this.tasks = [
-      {
-        id: 1,
-        title: 'Task 1',
-        description: 'Task 1 Description',
-        day: 'day 1',
-        reminder: true,
-      }, 
-      {
-        id: 2,
-        title: 'Task 2',
-        description: 'Task 2 Description',
-        day: 'day 2',
-        reminder: true,
-      },
-      {
-        id: 3,
-        title: 'Task 3',
-        description: 'Task 3 Description',
-        day: 'day 3',
-        reminder: true,
-      }
-    ]
+
+  async created() {
+    this.tasks = await this.fetchTasks()  
   },
 }
 
